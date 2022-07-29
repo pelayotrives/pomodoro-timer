@@ -9,7 +9,8 @@ export default function Timer() {
         <div className="container flex flex-col content-center items-center justify-center justify-items-center self-center">
             <h1 className='font-onlytitles font-medium text-6xl text-[#F23345]'>Pomodoro Timer</h1>
             <p className='font-onlybody font-semibold text-[#FB5042] mt-3'>Get relaxed. Your 25 minutes are about to begin.</p>
-            <div className='circle bg-gradient-to-b from-[#F23345] to-[#FB5042] w-72 h-72 rounded-full my-9'></div>
+            <div className='circle bg-gradient-to-b from-[#F23345] to-[#FB5042] w-72 h-72 rounded-full my-9 relative'></div>
+            <p className='absolute bottom-1/2 w-full text-center text-white font-onlybody font-medium text-3xl'>Progress</p>
             <button className='w-3/12 flex content-center items-center justify-center justify-items-center self-center bg-[#F23345] hover:bg-[#FB5042] text-white font-bold py-2 px-14 border-b-4 border-[#c42330] hover:border-[#d83024] rounded-lg text-white'>Start</button>
         </div> 
     </div>
