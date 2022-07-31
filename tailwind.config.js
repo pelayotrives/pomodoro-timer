@@ -8,11 +8,12 @@ module.exports = {
     extend: {
     },
     fontFamily: {
-        'mono': ['Open Sans', 'SFMono-Regular'],
+        'mono': ['SFMono-Regular'],
         'display': ['Oswald'],
         'body': ['Open Sans'],
         'onlybody': ['Roboto'],
-        'onlytitles': ['Rubik', 'Roboto', 'Teko'],
+        'onlytitles': ['Rubik', 'Roboto'],
+        'onlydetails': ['Teko']
     }
   },
   plugins: [],
