@@ -6,35 +6,69 @@ const UtilityContext = createContext();
 
 function ContextWrapper(props) { //! 2.) We create our function with props.
 
-  //! 3.) We add our global variables that we want to pass to other components. We will make an object to make it easier to de-structure it.
+  //! This will help to toggle our colors.
+  const [isActive, setIsActive] = useState(false);
 
+  //! 3.) We add our global variables that we want to pass to other components. We will make an object to make it easier to de-structure it.
   const styles = {
-    // Div
+    // ********* Background *********
+    styleBackgroundDefault: {
+        background: "linear-gradient(360deg, rgba(242,51,69,1) 0%, rgba(255,95,84,1) 100%)"
+    },
+    styleBackgroundToggled: {
+        background: "linear-gradient(360deg, rgba(0,0,0,1) 0%, rgba(51,70,116,1) 100%)"
+    },
+    // ********* Div *********
     styleDivDefault: {
         background: "#FFE4E2"
     },
     styleDivToggled: {
-        background: "#FFE4E2"
+        background: "#e5e2ff"
     },
-    // Circle
+    // ********* Circle *********
     styleDefault: {
-        background: "#F33345"
+        background: "linear-gradient(360deg, rgba(242,51,69,1) 0%, rgba(255,95,84,1) 100%)",
+        boxShadow: "0px 8px 20px 2px rgba(199,22,40,.3)"
     },
     styleToggled: {
-        background: "#FFE4E2"
+        background: "linear-gradient(360deg, rgba(0,0,0,1) 0%, rgba(51,70,116,1) 100%)",
+        boxShadow: "0px 8px 20px 2px rgba(0,0,0,.3)"
     },
-    // Text
-    styleTextDefault: {
+    styleTextSessionDefault: {
         color: "white"
     },
-    styleTextToggled: {
-        color: "#F33345"
+    // ********* Buttons *********
+    styleButtonDefault: {
+        background: "linear-gradient(360deg, rgba(242,51,69,1) 0%, rgba(255,95,84,1) 100%)",
+        boxShadow: "0px 4px 10px 1px rgba(199,22,40,.3)",
+        color: "white"
     },
+    styleButtonToggled: {
+        background: "linear-gradient(360deg, rgba(0,0,0,1) 0%, rgba(51,70,116,1) 100%)",
+        boxShadow: "0px 4px 10px 1px rgba(0,0,0,.3)",
+        color: "white"
+    },
+    // ********* Text *********
+    styleTextDefault: {
+        color: "rgba(242,51,69,1)"
+    },
+    styleTextToggled: {
+        color: "#141A2C"
+    },
+  };
+
+  // Change colors when toggle function.
+  const toggleButton = () => {
+    setIsActive(!isActive);
+    console.log("Toggle working.");
   };
 
   //! 4.) We create our context that will be passed to our children. After that, we will have to de-structure it like, FE: styles.styleToggled
   const passedContext = {
-    styles
+    styles,
+    toggleButton,
+    isActive,
+    setIsActive,
   };
 
   return (
