@@ -18,6 +18,30 @@ export default function Timer() {
   const [timeRunning, setTimeRunning] = useState(false);
   // log(styles);
 
+  //! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //! ---------------- This makes our timer to reset the interval and STOP counting the time, not just restarting the item per se. ----------------
+
+  useEffect(() => {
+    // log("The component did mount.")
+    if (timeRunning) {
+      myInterval.current = setInterval(() => {
+        setTimeLeft(previousTime => {
+          const currentTime = previousTime - 1;
+          if (currentTime >= 0) {
+            return previousTime - 1;
+          }
+          return previousTime;
+        });
+        // log("Interval working.");
+        setTimeRunning(true);
+      }, 1);
+    }
+
+    return () => {
+      clearInterval(myInterval.current);
+    }
+  }, [timeRunning])
+
   //! ---------------- Breaks length ----------------
 
   // Decrement intervals function (break).
@@ -31,6 +55,7 @@ export default function Timer() {
     let newIncrement = breaklength + 60;
     newIncrement >= 1500 ? setBreaklength(1500) : setBreaklength(newIncrement);
   };
+
 
   //! ---------------- Session Length ----------------
 
@@ -50,28 +75,19 @@ export default function Timer() {
 
   // Starting the counter function.
   const handleStarter = () => {
-    myInterval = setInterval(() => {
-      if (!timeRunning) {
-      setTimeLeft(previousTime => {
-          const currentTime = previousTime - 1;
-          if (currentTime >= 0) {
-            return previousTime - 1;
-          } 
-            return previousTime;
-          });
-          log("Interval working.");
-          setTimeRunning(true);
-      };
-    }, 1000);
+    setTimeRunning(true);
   };
 
   //! ---------------- Reset button ----------------
 
   // Restarting the counter function.
   const handleRestarter = () => {
-      clearInterval(myInterval);
+    timeRunning && 
+      clearInterval(myInterval.current);
       setSessionLength(1500);
+      setTimeLeft(1500);
       setBreaklength(300);
+      setTimeRunning(false);
       myInterval.current = null;
   };
 
