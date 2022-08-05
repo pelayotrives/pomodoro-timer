@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 //! Importing context from folder context.
 import { UtilityContext } from "../context/global.context";
 //! Moment (npm i moment) -> Installed to convert units in useState to seconds.
@@ -10,10 +10,12 @@ export default function Timer() {
   //! De-structuring our context object and console.log to make easier logs.
   const {styles, toggleButton, isActive, setIsActive} = useContext(UtilityContext);
   const {log} = console;
+  const myInterval = useRef();
   //! useState() consts.
   const [breaklength, setBreaklength] = useState(300);
-  const [sessionlength, setSessionlength] = useState(300 * 5);
+  const [sessionlength, setSessionLength] = useState(1500);
   const [timeLeft, setTimeLeft] = useState(sessionlength);
+  const [timeRunning, setTimeRunning] = useState(false);
   // log(styles);
 
   //! ---------------- Breaks length ----------------
@@ -35,13 +37,42 @@ export default function Timer() {
   // Decrement intervals function (sesion).
   const decrementSessionlength = () => {
     let newDecrement = sessionlength - 60;
-    newDecrement < 0 ? setSessionlength(0) : setSessionlength(newDecrement);
+    newDecrement < 0 ? setSessionLength(0) : setSessionLength(newDecrement);
   };
 
   // Increment intervals function (session).
   const incrementSessionlength = () => {
     let newIncrement = sessionlength + 60;
-    newIncrement >= 1500 ? setSessionlength(1500) : setSessionlength(newIncrement);
+    newIncrement >= 1500 ? setSessionLength(1500) : setSessionLength(newIncrement);
+  };
+
+  //! ---------------- Start button ----------------
+
+  // Starting the counter function.
+  const handleStarter = () => {
+    myInterval = setInterval(() => {
+      if (!timeRunning) {
+      setTimeLeft(previousTime => {
+          const currentTime = previousTime - 1;
+          if (currentTime >= 0) {
+            return previousTime - 1;
+          } 
+            return previousTime;
+          });
+          log("Interval working.");
+          setTimeRunning(true);
+      };
+    }, 1000);
+  };
+
+  //! ---------------- Reset button ----------------
+
+  // Restarting the counter function.
+  const handleRestarter = () => {
+      clearInterval(myInterval);
+      setSessionLength(1500);
+      setBreaklength(300);
+      myInterval.current = null;
   };
 
   //! ---------------- Button testing ----------------
@@ -51,10 +82,25 @@ export default function Timer() {
     log("Testing");
   };
 
+  //! ---------------- Double function starter ----------------
+  // Double function to be called on onClick event.
+  const doubleFunctionStarter = () => {
+    eventClick();
+    handleStarter();
+  }
+
+  //! ---------------- Double function restarter ----------------
+  // Double function to be called on onClick event.
+  const doubleFunctionRestarter = () => {
+    eventClick();
+    handleRestarter();
+  }
+
   //! Converting with moment seconds to minutes for using them later on.
   const breaklengthConverted = moment.duration(breaklength, "s").minutes();
   const sessionlengthConverted = moment.duration(sessionlength, "s").minutes();
-  const timeLeftConverted = moment.duration(timeLeft, "s").format("mm:ss");
+  // * {trim:false} makes our time to look in the format "00:58" instead of "58".
+  const timeLeftConverted = moment.duration(timeLeft, "s").format("mm:ss", {trim:false});
 
   //! ---------------- Time Left useEffect() ----------------
 
@@ -95,9 +141,9 @@ export default function Timer() {
         {/* Start - Restart button. */}
         <div className="buttons w-full flex flex-row justify-evenly justify-items-center content-evenly items-center self-center">
           {/* Start button. */}
-          <button style={isActive === false ? styles.styleButtonDefault : styles.styleButtonToggled} onClick={eventClick} className="flex content-center items-center justify-center justify-items-center self-center text-white font-bold w-3/12 py-2 px-14 rounded-lg bg-[#F23345] hover:bg-[#FB5042] active:bg-[#d62433] hover:brightness-150 transition-all">Start</button>
+          <button style={isActive === false ? styles.styleButtonDefault : styles.styleButtonToggled} onClick={doubleFunctionStarter} className="flex content-center items-center justify-center justify-items-center self-center text-white font-bold w-3/12 py-2 px-14 rounded-lg bg-[#F23345] hover:bg-[#FB5042] active:bg-[#d62433] hover:brightness-150 transition-all">Start</button>
           {/* Restart  button. */}
-          <button style={isActive === false ? styles.styleButtonDefault : styles.styleButtonToggled} onClick={eventClick} className="flex content-center items-center justify-center justify-items-center self-center text-white font-bold w-3/12 py-2 px-14 rounded-lg bg-[#F23345] hover:bg-[#FB5042] active:bg-[#d62433] hover:brightness-150 transition-all">Reset</button>
+          <button style={isActive === false ? styles.styleButtonDefault : styles.styleButtonToggled} onClick={doubleFunctionRestarter} className="flex content-center items-center justify-center justify-items-center self-center text-white font-bold w-3/12 py-2 px-14 rounded-lg bg-[#F23345] hover:bg-[#FB5042] active:bg-[#d62433] hover:brightness-150 transition-all">Reset</button>
         </div>
 
         {/* Break / Session length sections. */}
