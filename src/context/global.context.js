@@ -1,13 +1,21 @@
 //? Using context we can use global variables.
-import { createContext, useState } from "react";
+import { createContext, useRef, useState } from "react";
+import audioClick from '../assets/click.mp3';
+import audioToggle from '../assets/toggle.mp3'
 
 //! 1.) First we declare the constant for createContext();
 const UtilityContext = createContext();
 
 function ContextWrapper(props) { //! 2.) We create our function with props.
 
+  //* Audio variables
+  const audioOne = new Audio(audioClick) 
+  const audioRefOne = useRef(audioOne);
+  const audioTwo = new Audio(audioToggle) 
+  const audioRefTwo = useRef(audioTwo);
   //! This will help to toggle our colors.
   const [isActive, setIsActive] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState(false);
 
   //! 3.) We add our global variables that we want to pass to other components. We will make an object to make it easier to de-structure it.
   const styles = {
@@ -57,9 +65,22 @@ function ContextWrapper(props) { //! 2.) We create our function with props.
     },
   };
 
+  const audioOnePlay = () => {
+    setPlayingAudio(true);
+    audioRefOne.current.volume = 0.5;
+    audioRefOne.current.load();
+    audioRefOne.current.play();
+    setPlayingAudio(false);
+  }
+
   // Change colors when toggle function.
   const toggleButton = () => {
     setIsActive(!isActive);
+    setPlayingAudio(true);
+    audioRefTwo.current.volume = 0.3;
+    audioRefTwo.current.load();
+    audioRefTwo.current.play();
+    setPlayingAudio(false);
     console.log("Toggle working.");
   };
 
@@ -69,6 +90,7 @@ function ContextWrapper(props) { //! 2.) We create our function with props.
     toggleButton,
     isActive,
     setIsActive,
+    audioOnePlay,
   };
 
   return (

@@ -8,8 +8,9 @@ momentDurationFormatSetup(moment);
 
 export default function Timer() {
   //! De-structuring our context object and console.log to make easier logs.
-  const {styles, toggleButton, isActive, setIsActive} = useContext(UtilityContext);
+  const {styles, toggleButton, isActive, setIsActive, audioOnePlay} = useContext(UtilityContext);
   const {log} = console;
+  //! Variable assignment with useRef()
   const myInterval = useRef();
   //! useState() consts.
   const [breaklength, setBreaklength] = useState(300);
@@ -24,6 +25,7 @@ export default function Timer() {
   useEffect(() => {
     // log("The component did mount.")
     if (timeRunning) {
+      audioOnePlay();
       myInterval.current = setInterval(() => {
         setTimeLeft(previousTime => {
           const currentTime = previousTime - 1;
@@ -47,12 +49,14 @@ export default function Timer() {
   // Decrement intervals function (break).
   const decrementBreaklength = () => {
     let newDecrement = breaklength - 60;
+    (breaklength >= 60 && breaklength <= 1500) && audioOnePlay();
     newDecrement < 0 ? setBreaklength(0) : setBreaklength(newDecrement);
   };
 
   // Increment intervals function (break).
   const incrementBreaklength = () => {
     let newIncrement = breaklength + 60;
+    (breaklength >= 0 && breaklength < 1500) && audioOnePlay();
     newIncrement >= 1500 ? setBreaklength(1500) : setBreaklength(newIncrement);
   };
 
@@ -62,12 +66,14 @@ export default function Timer() {
   // Decrement intervals function (sesion).
   const decrementSessionlength = () => {
     let newDecrement = sessionlength - 60;
+    (sessionlength >= 60 && sessionlength <= 1500) && audioOnePlay();
     newDecrement < 0 ? setSessionLength(0) : setSessionLength(newDecrement);
   };
 
   // Increment intervals function (session).
   const incrementSessionlength = () => {
     let newIncrement = sessionlength + 60;
+    (sessionlength >= 0 && sessionlength < 1500) && audioOnePlay();
     newIncrement >= 1500 ? setSessionLength(1500) : setSessionLength(newIncrement);
   };
 
@@ -83,6 +89,7 @@ export default function Timer() {
   // Restarting the counter function.
   const handleRestarter = () => {
     timeRunning && 
+      audioOnePlay();
       clearInterval(myInterval.current);
       setSessionLength(1500);
       setTimeLeft(1500);
@@ -118,7 +125,7 @@ export default function Timer() {
   // * {trim:false} makes our time to look in the format "00:58" instead of "58".
   const timeLeftConverted = moment.duration(timeLeft, "s").format("mm:ss", {trim:false});
 
-  //! ---------------- Time Left useEffect() ----------------
+  //! ---------------- Time Left useEffect() [this makes the counter run] ----------------
 
   useEffect(() => {
     setTimeLeft(sessionlength);
