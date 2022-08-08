@@ -13,9 +13,10 @@ export default function Timer() {
   //! Variable assignment with useRef()
   const myInterval = useRef();
   //! useState() consts.
-  const [breaklength, setBreaklength] = useState(300);
-  const [sessionlength, setSessionLength] = useState(1500);
-  const [timeLeft, setTimeLeft] = useState(sessionlength);
+  const [sessionType, setSessionType] = useState('Session')
+  const [breakLength, setBreaklength] = useState(300);
+  const [sessionLength, setSessionLength] = useState(1500);
+  const [timeLeft, setTimeLeft] = useState(sessionLength);
   const [timeRunning, setTimeRunning] = useState(false);
   // log(styles);
 
@@ -32,7 +33,9 @@ export default function Timer() {
           if (currentTime >= 0) {
             return previousTime - 1;
           }
-          return previousTime;
+          else {
+            return previousTime;
+          }
         });
         // log("Interval working.");
         setTimeRunning(true);
@@ -44,19 +47,37 @@ export default function Timer() {
     }
   }, [timeRunning])
 
+  //! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //! ---------------- This makes our clock to change from session to break automaticly. ----------------
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      if (sessionType === 'Session') {
+        setSessionType('Break');
+        setTimeLeft(breakLength);
+      } else if (sessionType === 'Break') {
+        setSessionType('Session');
+        setTimeLeft(sessionLength);
+        setTimeRunning(false);
+      }
+    }
+  }, [breakLength, sessionType, sessionLength, timeLeft])
+  
+
+
   //! ---------------- Breaks length ----------------
 
   // Decrement intervals function (break).
   const decrementBreaklength = () => {
-    let newDecrement = breaklength - 60;
-    (breaklength >= 60 && breaklength <= 1500) && audioOnePlay();
+    let newDecrement = breakLength - 60;
+    (breakLength >= 60 && breakLength <= 1500) && audioOnePlay();
     newDecrement < 0 ? setBreaklength(0) : setBreaklength(newDecrement);
   };
 
   // Increment intervals function (break).
   const incrementBreaklength = () => {
-    let newIncrement = breaklength + 60;
-    (breaklength >= 0 && breaklength < 1500) && audioOnePlay();
+    let newIncrement = breakLength + 60;
+    (breakLength >= 0 && breakLength < 1500) && audioOnePlay();
     newIncrement >= 1500 ? setBreaklength(1500) : setBreaklength(newIncrement);
   };
 
@@ -65,15 +86,15 @@ export default function Timer() {
 
   // Decrement intervals function (sesion).
   const decrementSessionlength = () => {
-    let newDecrement = sessionlength - 60;
-    (sessionlength >= 60 && sessionlength <= 1500) && audioOnePlay();
+    let newDecrement = sessionLength - 60;
+    (sessionLength >= 60 && sessionLength <= 1500) && audioOnePlay();
     newDecrement < 0 ? setSessionLength(0) : setSessionLength(newDecrement);
   };
 
   // Increment intervals function (session).
   const incrementSessionlength = () => {
-    let newIncrement = sessionlength + 60;
-    (sessionlength >= 0 && sessionlength < 1500) && audioOnePlay();
+    let newIncrement = sessionLength + 60;
+    (sessionLength >= 0 && sessionLength < 1500) && audioOnePlay();
     newIncrement >= 1500 ? setSessionLength(1500) : setSessionLength(newIncrement);
   };
 
@@ -120,18 +141,17 @@ export default function Timer() {
   }
 
   //! Converting with moment seconds to minutes for using them later on.
-  const breaklengthConverted = moment.duration(breaklength, "s").minutes();
-  const sessionlengthConverted = moment.duration(sessionlength, "s").minutes();
+  const breaklengthConverted = moment.duration(breakLength, "s").minutes();
+  const sessionlengthConverted = moment.duration(sessionLength, "s").minutes();
   // * {trim:false} makes our time to look in the format "00:58" instead of "58".
   const timeLeftConverted = moment.duration(timeLeft, "s").format("mm:ss", {trim:false});
 
-  //! ---------------- Time Left useEffect() [this makes the counter run] ----------------
+  //! ---------------- this useEffect() makes the counter autoupdate when we change session or break length while time is running! ----------------
 
   useEffect(() => {
-    setTimeLeft(sessionlength);
-    log('The session has changed.', sessionlength);
-  }, [sessionlength]);
-  
+    sessionType === 'Session' ? setTimeLeft(sessionLength) : setTimeLeft(breakLength)
+  }, [sessionType === 'Session' ? sessionLength : breakLength]);
+
 
   return (
     <div style={isActive === false ? styles.styleDivDefault : styles.styleDivToggled} className="flex flex-col opacity-100 rounded-3xl shadow-2xl mx-auto my-0 w-2/6 h-4/6 flex content-center items-center justify-center justify-items-center self-center">
@@ -156,7 +176,7 @@ export default function Timer() {
         {/* Circle div and content inside it (session time). */}
         <div style={isActive === false ? styles.styleDefault : styles.styleToggled} className="circle shadow-reddy w-64 h-64 rounded-full my-8 relative hover:scale-105 transition-all">
           <div className="circle-wrapper absolute top-0 right-0 bottom-0 left-0 flex flex-col justify-center justify-items-center items-center content-center self-center">
-            <p style={styles.styleTextSessionDefault} className="w-full text-center font-onlybody font-regular tracking-wider text-2xl">Progress</p>
+            <p style={styles.styleTextSessionDefault} className="w-full text-center font-onlybody font-regular tracking-wider text-2xl">{sessionType}</p>
             <p style={styles.styleTextSessionDefault} className="w-full mt-2 text-center font-onlybody font-regular tracking-wide text-7xl timer">{timeLeftConverted}</p>
           </div>
         </div>

@@ -8,7 +8,7 @@ const UtilityContext = createContext();
 
 function ContextWrapper(props) { //! 2.) We create our function with props.
 
-  //* Audio variables
+  //! Audio variables
   const audioOne = new Audio(audioClick) 
   const audioRefOne = useRef(audioOne);
   const audioTwo = new Audio(audioToggle) 
@@ -67,8 +67,8 @@ function ContextWrapper(props) { //! 2.) We create our function with props.
 
   const audioOnePlay = () => {
     setPlayingAudio(true);
-    audioRefOne.current.volume = 0.5;
     audioRefOne.current.load();
+    audioRefOne.current.volume = 0.5;
     audioRefOne.current.play();
     setPlayingAudio(false);
   }
@@ -77,8 +77,8 @@ function ContextWrapper(props) { //! 2.) We create our function with props.
   const toggleButton = () => {
     setIsActive(!isActive);
     setPlayingAudio(true);
-    audioRefTwo.current.volume = 0.3;
     audioRefTwo.current.load();
+    audioRefTwo.current.volume = 0.3;
     audioRefTwo.current.play();
     setPlayingAudio(false);
     console.log("Toggle working.");
