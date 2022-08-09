@@ -112,6 +112,6 @@ export { UtilityContext, ContextWrapper };
 // ...
 
 //! 9.) We import it (Timer.jsx - line 3) ---> import { UtilityContext } from "../context/global.context";
-//! 10.) We de-structure our object (Timer.jsx - line 11) ---> const {styles} = useContext(UtilityContext);
+//! 10.) We de-structure our object (Timer.jsx - line 12) ---> const {styles, toggleButton, isActive, setIsActive, audioOnePlay} = useContext(UtilityContext);
 //! 11.) We do the same with any other component we want to apply our context to.
 

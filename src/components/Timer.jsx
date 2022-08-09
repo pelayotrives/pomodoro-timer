@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { UtilityContext } from "../context/global.context";
 //! Moment (npm i moment) -> Installed to convert units in useState to seconds.
 import moment from "moment";
+//! Moment Duration Format (npm i moment-duration-format) -> Installed to format the conversion of plain Moment package.
 import momentDurationFormatSetup from "moment-duration-format";
 momentDurationFormatSetup(moment);
 
@@ -20,7 +21,7 @@ export default function Timer() {
   const [timeRunning, setTimeRunning] = useState(false);
   // log(styles);
 
-  //! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //! (!!!) ---------------- useEffect number 1 ----------------
   //! ---------------- This makes our timer to reset the interval and STOP counting the time, not just restarting the item per se. ----------------
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function Timer() {
     }
   }, [timeRunning])
 
-  //! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //! (!!!) ---------------- useEffect number 2 ----------------
   //! ---------------- This makes our clock to change from session to break automaticly. ----------------
 
   useEffect(() => {
@@ -62,8 +63,13 @@ export default function Timer() {
       }
     }
   }, [breakLength, sessionType, sessionLength, timeLeft])
-  
 
+  //! (!!!) ---------------- useEffect number 3 ----------------
+  //! ---------------- this useEffect() makes the counter autoupdate when we change session or break length while time is running! ----------------
+
+  useEffect(() => {
+    sessionType === 'Session' ? setTimeLeft(sessionLength) : setTimeLeft(breakLength)
+  }, [sessionType === 'Session' ? sessionLength : breakLength]);
 
   //! ---------------- Breaks length ----------------
 
@@ -81,7 +87,6 @@ export default function Timer() {
     newIncrement >= 1500 ? setBreaklength(1500) : setBreaklength(newIncrement);
   };
 
-
   //! ---------------- Session Length ----------------
 
   // Decrement intervals function (sesion).
@@ -98,6 +103,13 @@ export default function Timer() {
     newIncrement >= 1500 ? setSessionLength(1500) : setSessionLength(newIncrement);
   };
 
+  //! ---------------- Button onClick() testing ----------------
+
+  // Testing buttons function.
+  const eventClick = () => {
+    log("Testing");
+  };
+
   //! ---------------- Start button ----------------
 
   // Starting the counter function.
@@ -109,21 +121,14 @@ export default function Timer() {
 
   // Restarting the counter function.
   const handleRestarter = () => {
+    audioOnePlay();
     timeRunning && 
-      audioOnePlay();
       clearInterval(myInterval.current);
       setSessionLength(1500);
       setTimeLeft(1500);
       setBreaklength(300);
       setTimeRunning(false);
       myInterval.current = null;
-  };
-
-  //! ---------------- Button testing ----------------
-
-  // Testing buttons function.
-  const eventClick = () => {
-    log("Testing");
   };
 
   //! ---------------- Double function starter ----------------
@@ -140,28 +145,24 @@ export default function Timer() {
     handleRestarter();
   }
 
-  //! Converting with moment seconds to minutes for using them later on.
+  //! ---------------- Formatting our starting time. ----------------
+  //! ---------------- Converting with moment seconds to minutes for using them later on. ----------------
   const breaklengthConverted = moment.duration(breakLength, "s").minutes();
   const sessionlengthConverted = moment.duration(sessionLength, "s").minutes();
   // * {trim:false} makes our time to look in the format "00:58" instead of "58".
   const timeLeftConverted = moment.duration(timeLeft, "s").format("mm:ss", {trim:false});
 
-  //! ---------------- this useEffect() makes the counter autoupdate when we change session or break length while time is running! ----------------
-
-  useEffect(() => {
-    sessionType === 'Session' ? setTimeLeft(sessionLength) : setTimeLeft(breakLength)
-  }, [sessionType === 'Session' ? sessionLength : breakLength]);
-
+  //* Return (JSX)
 
   return (
-    <div style={isActive === false ? styles.styleDivDefault : styles.styleDivToggled} className="flex flex-col opacity-100 rounded-3xl shadow-2xl mx-auto my-0 w-2/6 h-4/6 flex content-center items-center justify-center justify-items-center self-center">
+    <div style={isActive === false ? styles.styleDivDefault : styles.styleDivToggled} className="flex flex-col opacity-100 rounded-3xl shadow-2xl mx-auto my-0 2xl:w-2/6 xs:h-giga sm:h-fit sm:py-6 md:h-4/6 flex content-center items-center justify-center justify-items-center self-center">
 
      <div className="container flex flex-col content-center items-center justify-center justify-items-center self-center">
         
         {/* Title and toggle. */}
 
         {/* Title. */}
-        <h1 style={isActive === false ? styles.styleTextDefault : styles.styleTextToggled} className="font-onlytitles font-medium text-6xl text-[#F23345]">Pomodoro Timer</h1>
+        <h1 style={isActive === false ? styles.styleTextDefault : styles.styleTextToggled} className="font-onlytitles font-medium text-6xl mx-2 text-[#F23345]">Pomodoro Timer</h1>
 
         {/* Toggle. */}
         <div className="toggle-button flex flex-row items-center justify-center mt-5">
