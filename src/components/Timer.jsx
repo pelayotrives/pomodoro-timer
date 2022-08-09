@@ -40,7 +40,7 @@ export default function Timer() {
         });
         // log("Interval working.");
         setTimeRunning(true);
-      }, 1);
+      }, 1000);
     }
 
     return () => {
