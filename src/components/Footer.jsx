@@ -7,7 +7,7 @@ export default function Footer() {
   const {styles, toggleButton, isActive, setIsActive} = useContext(UtilityContext);
 
   return (
-    <div className="xs:hidden sm:hidden">
+    <div className="xs:hidden sm:hidden md:flex">
         {/* fixed bottom-0 left-0 w-screen h-14 lets stick the footer to the bottom. */}
         <footer className='fixed bottom-0 left-0 w-screen h-14 p-3 font-onlybody font-regular text-white tracking-wide'>{isActive === true &&
             " Dark Mode | "
