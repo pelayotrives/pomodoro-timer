@@ -13,7 +13,9 @@ module.exports = {
         'small': '25vh',
         'medium': '50vh',
         'big': '75vh',
+        'great': '80vh',
         'enormous': '85vh',
+        'ultra': '90vh',
         'giga': '95vh'
       }
     },
@@ -26,12 +28,18 @@ module.exports = {
       'onlydetails': ['Teko']
     },
     screens: {
-      'xs': '359px',
+      'xsm': '350px',
       'sm': '375px',
-      'md': '500px',
+      'xxxmd': '390px',
+      'xxmd': '400px',
+      'xmd': '500px',
+      'md': '550px',
+      'xlg': '700px',
       'lg': '1024px',
+      'xxl': '1142px',
       'xl': '1280px',
-      '2xl': '1536px',
+      '2xl': '1350px',
+      '3xl': '1536px',
     }
   },
   plugins: [],
